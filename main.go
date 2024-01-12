@@ -3,7 +3,10 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"os"
+
+	"github.com/go-chi/chi"
 	"github.com/joho/godotenv"
 )
 
@@ -18,6 +21,22 @@ func main() {
 	}
 
 	fmt.Printf("Project is working on Port %s \n", port)
+
+	router := chi.NewRouter()
+
+	fmt.Printf("Server started working on Port %s \n", port)
+
+	srv := &http.Server {
+		Handler : router,
+		Addr : ":" + port, // Address 
+	}
+
+	err := srv.ListenAndServe()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
 
 	return
 }
