@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/go-chi/chi"
+	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
 )
 
@@ -23,6 +24,15 @@ func main() {
 	fmt.Printf("Project is working on Port %s \n", port)
 
 	router := chi.NewRouter()
+
+	router.Use( cors.Handler(cors.Options{
+		AllowedOrigins: []string{"https://*", "http://*"},
+		AllowedMethods: []string{"GET", "POST" , "PATCH", "DELETE", "OPTIONS"},
+		AllowedHeaders: []string{"*"},
+		ExposedHeaders: []string{"LINK"},
+		AllowCredentials: false,
+		MaxAge: 300,
+	}))
 
 	fmt.Printf("Server started working on Port %s \n", port)
 
