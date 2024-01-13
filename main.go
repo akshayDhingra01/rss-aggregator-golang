@@ -34,6 +34,12 @@ func main() {
 		MaxAge: 300,
 	}))
 
+	v1router := chi.NewRouter()
+	v1router.HandleFunc("/ready", handlerReadiness)
+
+	router.Mount("/healthz", v1router)  // This is done for creating two different handlers : 1 for v1 and 1 for v2 if happens : Standard
+
+
 	fmt.Printf("Server started working on Port %s \n", port)
 
 	srv := &http.Server {
