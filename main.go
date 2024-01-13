@@ -25,26 +25,27 @@ func main() {
 
 	router := chi.NewRouter()
 
-	router.Use( cors.Handler(cors.Options{
-		AllowedOrigins: []string{"https://*", "http://*"},
-		AllowedMethods: []string{"GET", "POST" , "PATCH", "DELETE", "OPTIONS"},
-		AllowedHeaders: []string{"*"},
-		ExposedHeaders: []string{"LINK"},
+	router.Use(cors.Handler(cors.Options{
+		AllowedOrigins:   []string{"https://*", "http://*"},
+		AllowedMethods:   []string{"GET", "POST", "PATCH", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"*"},
+		ExposedHeaders:   []string{"LINK"},
 		AllowCredentials: false,
-		MaxAge: 300,
+		MaxAge:           300,
 	}))
 
 	v1router := chi.NewRouter()
-	v1router.HandleFunc("/ready", handlerReadiness)
+	// v1router.HandleFunc("/healthz", handlerReadiness) // This will allow on all HTTP Request if want to do it in specific see below
 
-	router.Mount("/healthz", v1router)  // This is done for creating two different handlers : 1 for v1 and 1 for v2 if happens : Standard
+	v1router.Get("/healthz", handlerReadiness)
 
+	router.Mount("/v1", v1router) // This is done for creating two different handlers : 1 for v1 and 1 for v2 if happens : Standard
 
 	fmt.Printf("Server started working on Port %s \n", port)
 
-	srv := &http.Server {
-		Handler : router,
-		Addr : ":" + port, // Address 
+	srv := &http.Server{
+		Handler: router,
+		Addr:    ":" + port, // Address
 	}
 
 	err := srv.ListenAndServe()
@@ -52,7 +53,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 
 	return
 }
