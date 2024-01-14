@@ -1,4 +1,5 @@
-github.com.exe
+rss-aggregator-golang
 go.mod
 .env
 main.exe
+go.sum

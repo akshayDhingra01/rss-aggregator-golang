@@ -43,7 +43,6 @@ func main() {
 	router.Mount("/v1", v1router) // This is done for creating two different handlers : 1 for v1 and 1 for v2 if happens : Standard
 
 	fmt.Printf("Server started working on Port %s \n", port)
-	fmt.Printf("Server started working on Port %s \n", port)
 
 	srv := &http.Server{
 		Handler: router,

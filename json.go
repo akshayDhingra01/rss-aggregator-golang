@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 )
@@ -11,8 +10,6 @@ func respondWithError(w http.ResponseWriter, code int, msg string) { // http han
 	if code > 499 {
 		log.Println("Responding with Error 5xx:", msg)
 	}
-
-	log.Fatal("Compre with")
 
 	type errorResponse struct {
 		Error string `json:"error"` // json error is used to write so to say that in key-value pair, value of key should be error
@@ -29,7 +26,6 @@ func respondWithJson(w http.ResponseWriter, code int, payload interface{}) { // 
 		w.WriteHeader(500)
 		return
 	}
-	fmt.Printf("Server started working on Port \n")
 
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(200)
