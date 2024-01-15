@@ -9,7 +9,13 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
+	"github.com/akshayDhingra01/rss-aggregator-golang/internal/database"
 )
+
+type apiConfig struct {
+	DB *database.Queries
+}
+
 
 func main() {
 	fmt.Println("Hello World")
