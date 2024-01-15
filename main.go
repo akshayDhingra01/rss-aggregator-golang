@@ -1,21 +1,22 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 
+	"github.com/akshayDhingra01/rss-aggregator-golang/internal/database"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
-	"github.com/akshayDhingra01/rss-aggregator-golang/internal/database"
+	_ "github.com/lib/pq"
 )
 
 type apiConfig struct {
 	DB *database.Queries
 }
-
 
 func main() {
 	fmt.Println("Hello World")
@@ -25,6 +26,21 @@ func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
 		log.Fatal("Port not found in the environment")
+	}
+
+	dbUrl := os.Getenv("DB_URL")
+	if dbUrl == "" {
+		log.Fatal("DB Url not found in the environment")
+	}
+
+	conn, err := sql.Open("postgres", dbUrl)
+
+	if err != nil {
+		log.Fatal("Can't connect to database", err)
+	}
+
+	apiCfg := apiConfig{ // api config which can be passed upon to the handler
+		DB: database.New(conn),
 	}
 
 	fmt.Printf("Project is working on Port %s \n", port)
@@ -45,6 +61,7 @@ func main() {
 
 	v1router.Get("/healthz", handlerReadiness)
 	v1router.Get("/error", handleError)
+	v1router.Get("/users", apiCfg.handlerCreateUser)
 
 	router.Mount("/v1", v1router) // This is done for creating two different handlers : 1 for v1 and 1 for v2 if happens : Standard
 
@@ -55,7 +72,7 @@ func main() {
 		Addr:    ":" + port, // Address
 	}
 
-	err := srv.ListenAndServe()
+	err = srv.ListenAndServe()
 
 	if err != nil {
 		log.Fatal(err)
